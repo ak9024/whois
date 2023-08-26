@@ -3,7 +3,7 @@ package whois_test
 import (
 	"testing"
 
-	"github.com/ak9024/whois/internal/whois"
+	"github.com/ak9024/whois/whois"
 	"github.com/stretchr/testify/assert"
 )
 

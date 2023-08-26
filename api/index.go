@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/ak9024/whois/internal/whois"
+	"github.com/ak9024/whois/whois"
 )
 
 var whoisRequest whois.WhoisRequest
