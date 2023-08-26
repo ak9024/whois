@@ -1,6 +1,6 @@
 module github.com/ak9024/whois
 
-go 1.21.0
+go 1.20
 
 require (
 	github.com/likexian/whois v1.15.0
