@@ -4,39 +4,30 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/likexian/whois"
-	whoisparser "github.com/likexian/whois-parser"
+	"github.com/ak9024/whois/whois"
 )
 
-type WhoisResponse20xOk struct {
-	Code   int         `json:"code"`
-	Result interface{} `json:"result"`
-}
-
-type WhoisRequest struct {
-	Domain string `json:"domain"`
-}
+var whoisRequest whois.WhoisRequest
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 
-	var whoisRequest WhoisRequest
+	if r.Method != http.MethodPost {
+		w.WriteHeader(http.StatusNotFound)
+	}
+
 	errDecode := json.NewDecoder(r.Body).Decode(&whoisRequest)
 	if errDecode != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
-	raw, errWhois := whois.Whois(whoisRequest.Domain)
+	wn := whois.New(whoisRequest.Domain)
+	result, errWhois := wn.Whois()
 	if errWhois != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
-	result, errWhoisParse := whoisparser.Parse(raw)
-	if errWhoisParse != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-	}
-
-	errEncode := json.NewEncoder(w).Encode(WhoisResponse20xOk{
+	errEncode := json.NewEncoder(w).Encode(whois.WhoisResponse20xOk{
 		Code:   http.StatusOK,
 		Result: result,
 	})
