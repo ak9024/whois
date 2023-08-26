@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/likexian/whois"
+	whoisparser "github.com/likexian/whois-parser"
 )
 
 type WhoisResponse20xOk struct {
@@ -25,8 +26,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
-	result, errWhois := whois.Whois(whoisRequest.Domain)
+	raw, errWhois := whois.Whois(whoisRequest.Domain)
 	if errWhois != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+
+	result, errWhoisParse := whoisparser.Parse(raw)
+	if errWhoisParse != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
